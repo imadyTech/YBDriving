@@ -109,4 +109,14 @@ public class CarController : MonoBehaviour
         lineRenderer.positionCount = pathPoints.Length;
         lineRenderer.SetPositions(pathPoints);
     }
+
+
+    // This function is called when the GameObject starts colliding with another GameObject
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Print the name of the object the GameObject starts colliding with
+        //Debug.Log(gameObject.name + " has collided with " + collision.gameObject.name);
+    }
+
+
 }

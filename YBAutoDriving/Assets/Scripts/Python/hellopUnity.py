@@ -6,7 +6,7 @@ PYTHON_LISTEN_IP = '127.0.0.1'
 PYTHON_LISTEN_PORT = 31416
 BufferSize = 24_576   # the resolution of input image 128x64x3
 
-def sendToUnity(message):
+def send_To_Unity(command, message):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
         #sock.bind((UnityIP, UnityPort))
         # Encode the message to bytes and send it to Unity
@@ -42,7 +42,7 @@ def handle_received_binary_data(data):
     # Here you can process the received binary data
     #print(f"Received data length: {len(data.decode())} bytes")
     #sys.stdout.flush()
-    sendToUnity(f"Received data length: {len(data.decode())} bytes")
+    send_To_Unity(f"Received data length: {len(data.decode())} bytes")
 
 if __name__ == "__main__":
     #sendToUnity("Python is standing by...")
