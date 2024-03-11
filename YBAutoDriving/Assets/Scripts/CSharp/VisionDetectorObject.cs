@@ -11,7 +11,7 @@ public class VisionDetectorObject : MonoBehaviour
     public SignController signController;
     private Rect boundingBox;
     private bool shouldDrawBoundingBox = false;
-    private int classId = 0;
+    public int classId = 0;
     //a detector placed in front of sign to detect the facing direction
     private GameObject visibilitydetector;
 
@@ -31,13 +31,18 @@ public class VisionDetectorObject : MonoBehaviour
 
     void OnWillRenderObject()
     {
+
         if (Camera.current == signController.visionCamera)
         {
             boundingBox = CalculateBoundingBox(gameObject, Camera.current);
+            var widthHeightRatio = boundingBox.width/boundingBox.height;
+
 
             shouldDrawBoundingBox =
-                Mathf.Abs(boundingBox.height) * Mathf.Abs(boundingBox.width) > signController.minimumRenderedArea &&                       //Not draw sign with small rendered size
-                Vector3.Distance(this.gameObject.transform.position, signController.visionCamera.transform.position) < 30f  //Not draw sign too far away
+                Mathf.Abs(boundingBox.height) * Mathf.Abs(boundingBox.width) > signController.minimumRenderedArea &&            //Not draw sign with small rendered size
+                Vector3.Distance(this.gameObject.transform.position, signController.visionCamera.transform.position) < 30f      //Not draw sign too far away; 20f = 40meters
+                && widthHeightRatio> signController.minimumWidthHeightRatio
+                && widthHeightRatio< signController.maximumWidthHeightRatio
                 //&& I_Can_See(this.gameObject, signController.visionCamera)
                 && I_Can_See(this.visibilitydetector, signController.visionCamera)
                 ? true : false;

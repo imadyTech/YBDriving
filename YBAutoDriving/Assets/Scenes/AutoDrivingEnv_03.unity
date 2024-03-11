@@ -25162,7 +25162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 854937047}
-  - component: {fileID: 854937046}
+  - component: {fileID: 854937048}
   m_Layer: 0
   m_Name: Python Connector
   m_TagString: Untagged
@@ -25170,19 +25170,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &854937046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 854937045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d30c224c0caa224c9dfa486ab93f2bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  car: {fileID: 184966143}
 --- !u!4 &854937047
 Transform:
   m_ObjectHideFlags: 0
@@ -25198,6 +25185,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &854937048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854937045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8aed3b032910494abbfbe6efd6d0831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  car: {fileID: 0}
 --- !u!1001 &856262285
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45234,12 +45234,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c7638674520974a97c70e698d3843b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOutputToFile: 0
+  isOutputToPython: 0
+  isClearFolderBeforeRun: 0
+  outputPath: 
   TrafficSignType: TrafficLight
-  isOutputTexture: 0
   minimumRenderedArea: 10
+  minimumWidthHeightRatio: 0.33333334
+  maximumWidthHeightRatio: 3
+  pythonConnector: {fileID: 0}
   visionCamera: {fileID: 0}
   car: {fileID: 0}
   versionCode: v1
+  trainValProportion: 80
 --- !u!1001 &1442118270
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55529,7 +55536,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.084905684, g: 0.084905684, b: 0.084905684, a: 0}
+  m_BackGroundColor: {r: 0.6392157, g: 0.76470596, b: 0.48235297, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -64342,12 +64349,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c7638674520974a97c70e698d3843b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOutputToFile: 1
+  isOutputToPython: 0
+  isClearFolderBeforeRun: 1
+  outputPath: D:/ybdriving/dataset
   TrafficSignType: TrafficSign
-  isOutputTexture: 0
   minimumRenderedArea: 36
+  minimumWidthHeightRatio: 0.33333334
+  maximumWidthHeightRatio: 3
+  pythonConnector: {fileID: 854937048}
   visionCamera: {fileID: 942557592}
   car: {fileID: 184966140}
   versionCode: v1
+  trainValProportion: 20
 --- !u!1001 &2014689698
 PrefabInstance:
   m_ObjectHideFlags: 0

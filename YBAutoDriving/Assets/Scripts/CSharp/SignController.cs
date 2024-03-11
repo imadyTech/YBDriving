@@ -5,16 +5,22 @@ using System;
 
 public class SignController : MonoBehaviour
 {
+    public bool isOutputToFile = false;
+    public bool isOutputToPython = false;
+    public bool isClearFolderBeforeRun = false;
+
+    public string outputPath = "";
     public string TrafficSignType;
-    public bool isOutputTexture=false;
-    public float minimumRenderedArea = 10f;
+    public float minimumRenderedArea = 10f;             //threshold of output vision
+    public float minimumWidthHeightRatio = 1 / 3f;     //threshold of width/height ratio to output vision
+    public float maximumWidthHeightRatio = 3 / 1f;     //threshold of width/height ratio to output vision
+    public heyCar pythonConnector;
 
     public Camera visionCamera;
     public GameObject car; // Reference to the car
 
     List<GameObject> trafficSigns = new List<GameObject>();
-
-    List<Tuple<Rect,int>> annotations = new List<Tuple<Rect, int>>();
+    List<Tuple<Rect, int>> annotations = new List<Tuple<Rect, int>>();
 
     public string versionCode = "v1";
 
@@ -26,6 +32,11 @@ public class SignController : MonoBehaviour
         {
             sign.AddComponent<VisionDetectorObject>().signController = this;
             //Debug.Log("Found traffic sign: " + sign.name);
+        }
+
+        if(isOutputToFile && isClearFolderBeforeRun)
+        {
+            ClearDirectoryContents(this.outputPath);
         }
     }
     void FindTrafficSignsRecursively(Transform parent, ref List<GameObject> foundSigns)
@@ -44,11 +55,19 @@ public class SignController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (isOutputTexture && annotations.Count > 0 )
+        if (annotations.Count <= 0) return;
+
+        GetVision();
+
+        if (isOutputToFile)
         {
             OutputVision();
-            annotations.Clear();
         }
+        if (isOutputToPython)
+        {
+            pythonConnector.SendVision(this.imgData);
+        }
+        annotations.Clear();
     }
 
     internal void OnSignIsRendered(Rect boundingBox, int classIndex)
@@ -72,14 +91,9 @@ public class SignController : MonoBehaviour
 
 
     private int imgId = 0;
-    private void OutputVision()
+    byte[] imgData = null;
+    private void GetVision()
     {
-        // Generate filename based on the current time (or any unique naming scheme)
-        string fileName = $"YBDriving_{versionCode}_{System.DateTime.Now:yyyyMMddHHmmss}_{imgId}";
-        string imagePath = $"d:ybdriving/dataset/images/{fileName}.png";
-        string labelPath = $"d:ybdriving/dataset/labels/{fileName}.txt";
-        imgId++;
-
         // Capture the screen or RenderTexture content
         RenderTexture activeRenderTexture = RenderTexture.active;
         RenderTexture.active = this.visionCamera.targetTexture;
@@ -87,18 +101,34 @@ public class SignController : MonoBehaviour
         Texture2D texture = new Texture2D(this.visionCamera.targetTexture.width, this.visionCamera.targetTexture.height, TextureFormat.RGB24, false);
         texture.ReadPixels(new Rect(0, 0, this.visionCamera.targetTexture.width, this.visionCamera.targetTexture.height), 0, 0);
         texture.Apply();
-        foreach (var annotation in annotations)
-        {
-            DrawBoundingBox(ref texture, annotation.Item1, Color.red); // Color can be changed as needed
-        }
+        //foreach (var annotation in annotations)
+        //{
+        //    DrawBoundingBox(ref texture, annotation.Item1, Color.red); // Color can be changed as needed
+        //}
         RenderTexture.active = activeRenderTexture; // Reset active RenderTexture
 
         // Save texture as PNG
-        byte[] bytes = texture.EncodeToPNG();
-        System.IO.File.WriteAllBytes(imagePath, bytes);
+        imgData = texture.EncodeToPNG();
+        RenderTexture.active = null;
+    }
+
+    string isTrainOrVal = "Train";
+    public int trainValProportion=20;
+    private void OutputVision()
+    {
+        System.Random random = new System.Random();
+
+        isTrainOrVal = random.Next(0,100) >= trainValProportion ? "train" : "val";
+
+        // Generate filename based on the current time (or any unique naming scheme)
+        string fileName = $"YBDriving_{versionCode}_{System.DateTime.Now:yyyyMMddHHmmss}_{imgId}";
+        string imagePath = $"{outputPath}/{isTrainOrVal}/images/{fileName}.png";
+        string labelPath = $"{outputPath}/{isTrainOrVal}/labels/{fileName}.txt";
+        imgId++;
+
+        System.IO.File.WriteAllBytes(imagePath, imgData);
         Debug.Log($"Saved vision texture to {imagePath}");
 
-        RenderTexture.active = null;
 
         SaveAnnotations(annotations, labelPath);
     }
@@ -110,7 +140,7 @@ public class SignController : MonoBehaviour
             {
                 // Normalize the bounding box coordinates
                 float x_center = (annotation.Item1.xMin + annotation.Item1.width / 2) / this.visionCamera.targetTexture.width;
-                float y_center = (annotation.Item1.yMin + annotation.Item1.height / 2) / this.visionCamera.targetTexture.height;
+                float y_center = 1-(annotation.Item1.yMin + annotation.Item1.height / 2) / this.visionCamera.targetTexture.height;
                 float width = annotation.Item1.width / this.visionCamera.targetTexture.width;
                 float height = annotation.Item1.height / this.visionCamera.targetTexture.height;
 
@@ -120,6 +150,23 @@ public class SignController : MonoBehaviour
         }
         Debug.Log($"Saved annotations to {path}");
     }
+
+    public void ClearDirectoryContents(string path)
+    {
+        deleteAllFiles( $"{path}/train/images/");
+        deleteAllFiles( $"{path}/train/labels/");
+        deleteAllFiles( $"{path}/val/images/");
+        deleteAllFiles( $"{path}/val/labels/");
+
+        void deleteAllFiles(string filepath)
+        {
+            foreach (string file in System.IO.Directory.GetFiles(filepath))
+            {
+                System.IO.File.Delete(file);
+            }
+        }
+    }
+
     private void DrawBoundingBox(ref Texture2D texture, Rect boundingBox, Color color)
     {
         // Draw the border of the rectangle

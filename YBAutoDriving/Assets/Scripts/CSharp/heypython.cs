@@ -13,7 +13,7 @@ using System.Threading;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.PackageManager;
 
-public class PythonConnector : MonoBehaviour
+public class heypython : MonoBehaviour
 {
 
     private ProcessStartInfo startInfo;
