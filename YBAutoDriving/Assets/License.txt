@@ -1,21 +1,3 @@
-
-Unity asset: SimplePoly City - Low Poly Assets
-https://assetstore.unity.com/packages/3d/environments/simplepoly-city-low-poly-assets-58899
-Provided by VenCreations
-www.vencreations.com/
-contact@vencreations.com
-https://assetstore.unity.com/publishers/19573
-Under Unity Assetstore Standard EULA
-https://unity.com/cn/legal/as-terms
-
-
-2021 BMW M4 Competition
-Ricy
-https://sketchfab.com/ngon_3d
-https://sketchfab.com/3d-models/2021-bmw-m4-competition-d3f07b471d9f4a2c9a2acf79d88a3645
-
-
-Traffic Signs
-Produced by Zhenqun, Shen
-imadytech@gmail.com
-Offered under MIT License
+"Traffic Sign 20MpH" 
+(https://skfb.ly/6BWAG) 
+by hadi.saputra is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
